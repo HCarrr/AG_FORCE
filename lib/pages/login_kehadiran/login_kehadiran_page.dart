@@ -1,5 +1,4 @@
 import 'package:agforce_kehadiran/controller/login_kehadiran_controller.dart';
-import 'package:agforce_kehadiran/pages/qr_attendance/qr_attendance_page.dart';
 import 'package:agforce_kehadiran/routes/route_name.dart';
 import 'package:agforce_kehadiran/utilities/colors.dart';
 import 'package:agforce_kehadiran/widgets/buttons/button_primary.dart';
@@ -10,7 +9,6 @@ import 'package:get/get.dart';
 import '../../utilities/form_decoration.dart';
 import '../../utilities/typhography.dart';
 import '../../widgets/appbar/appbar_default.dart';
-import '../../widgets/buttons/button_action.dart';
 
 class FormPage extends StatelessWidget {
   FormPage({super.key});
@@ -36,7 +34,7 @@ class FormPage extends StatelessWidget {
               child: Column(
                 children: [
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -86,6 +84,31 @@ class FormPage extends StatelessWidget {
               ),
             ),
           ),
+          // Container(
+          //   decoration: BoxDecoration(
+          //     color: kColorPureWhite ,
+          //     borderRadius: BorderRadius.circular(10),
+          //     boxShadow: [
+          //       BoxShadow(
+          //         color: kColorPureBlack.withOpacity(0.1),
+          //         offset: const Offset(0, 0.5),
+          //         blurRadius: 10,
+          //       )
+          //     ],
+          //   ),
+          //   child: Padding(
+          //     padding: const EdgeInsets.all(18),
+          //     child: Obx(()=> ButtonPrimary(
+          //       textButton: "Read",
+          //       isActive: controller.isAllFormValid.value,
+          //       onTap: (){
+          //         // Get.toNamed(RouteName.qrAttendance);
+          //         controller.readData();
+          //       },
+          //     )),
+          //   ),
+          // ),
+
           Container(
             decoration: BoxDecoration(
               color: kColorPureWhite ,
@@ -100,14 +123,44 @@ class FormPage extends StatelessWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.all(18),
-              child: ButtonPrimary(
-                  textButton: 'Simpan',
-                  onTap: (){
-                    Get.toNamed(RouteName.qrAttendance);
-                  }
-              ),
+              child: Obx(()=> ButtonPrimary(
+                textButton: "Simpan",
+                isActive: controller.isAllFormValid.value,
+                onTap: (){
+                  Get.toNamed(RouteName.qrAttendance, arguments: {
+                    'unitKerja': controller.unitKerjaText.value.text,
+                    'publicKey': controller.publicKeyText.value.text,
+                    'privateKey': controller.privateKeyText.value.text,
+                  });
+                },
+              )),
             ),
-          )
+          ),
+
+          // Container(
+          //   decoration: BoxDecoration(
+          //     color: kColorPureWhite ,
+          //     borderRadius: BorderRadius.circular(10),
+          //     boxShadow: [
+          //       BoxShadow(
+          //         color: kColorPureBlack.withOpacity(0.1),
+          //         offset: const Offset(0, 0.5),
+          //         blurRadius: 10,
+          //       )
+          //     ],
+          //   ),
+          //   child: Padding(
+          //     padding: const EdgeInsets.all(18),
+          //     child: Obx(()=> ButtonPrimary(
+          //       textButton: "Delete",
+          //       isActive: controller.isAllFormValid.value,
+          //       onTap: (){
+          //         // Get.toNamed(RouteName.qrAttendance);
+          //         controller.deleteData();
+          //       },
+          //     )),
+          //   ),
+          // ),
         ],
       ),
     );
