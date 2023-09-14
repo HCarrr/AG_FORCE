@@ -3,21 +3,33 @@ import 'package:get/get.dart';
 import 'dart:math';
 import 'package:encrypt/encrypt.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:intl/intl.dart';
+import 'package:encrypt/encrypt.dart' as enc;
 
 class QRCodeController extends GetxController {
-  final box = GetStorage();
   RxString qrData = ''.obs;
   Timer? qrCodeTimer;
   DateTime dateTime = DateTime.now();
+  var resultQR = ''.obs;
+
+  var publicKey = ''.obs;
+  var privateKey = ''.obs;
 
   @override
   void onInit() {
     super.onInit();
     startCountdown();
+    encrypt();
+    // data();
+    Map<String, dynamic> arguments = Get.arguments;
+    publicKey.value = arguments['publicKey'];
+    privateKey.value = arguments['privateKey'];
+
     qrCodeTimer = Timer.periodic(Duration(seconds: 6), (timer) {
       String newData = generateNewQRData();
-      data();
-      qrData.value = newData;
+      encrypt();
+      // data();
+      qrData.value = resultQR.value;
     });
   }
 
@@ -44,7 +56,7 @@ class QRCodeController extends GetxController {
     });
   }
 
-  void data() {
+  /*void data() {
     Map<String, dynamic> arguments = Get.arguments;
     if (arguments != null) {
       String publicKey = arguments['publicKey'];
@@ -61,8 +73,10 @@ class QRCodeController extends GetxController {
 
       print(decrypted);
       print(encrypted.base64.toString());
+      resultQR.value = encrypted.base64.toString();
+      print(resultQR.value*//* + "qwqwqwq"*//*);
     }
-  }
+  }*/
 
   String generateRandomString(int length) {
     const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -73,5 +87,24 @@ class QRCodeController extends GetxController {
 
   String generateNewQRData() {
     return generateRandomString(10);
+  }
+
+
+
+  void encrypt(){
+    Map<String, dynamic> arguments = Get.arguments;
+      String publicKey = arguments['publicKey'];
+      String privateKey = arguments['privateKey'];
+
+    var date = DateFormat('yyyy-MM-ddTHH:mm:ss').format(DateTime.now());
+    final plainText = '${publicKey}#${date}#${privateKey}#AGFORCEJAYAJAYA';
+    final key = enc.Key.fromUtf8('${publicKey}');
+    final iv = enc.IV.fromUtf8("my16digitIvKey12");
+    final encrypter = enc.Encrypter(enc.AES(key, mode: enc.AESMode.cbc));
+    final encrypted = encrypter.encrypt(plainText, iv: iv);
+    resultQR.value = encrypted.base64;
+    print("test123 ${resultQR.value.toString()}");
+    // return encrypted.base64;
+
   }
 }
